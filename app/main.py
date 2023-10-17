@@ -8,12 +8,15 @@ import sys
 #
 # - decode_bencode(b"5:hello") -> b"hello"
 # - decode_bencode(b"10:hello12345") -> b"hello12345"
-
+# - decode_bencode(b"i52e") -> b"52"
+# - decode_bencode(b"i-52e") -> b"-52"
 
 def decode_bencode(bencoded_value):
     if chr(bencoded_value[0]).isdigit():
         length = int(bencoded_value.split(b":")[0])
         return bencoded_value.split(b":")[1][:length]
+    if chr(bencoded_value[0]) == "i":
+        return int(bencoded_value[1:].split(b"e")[0])
     else:
         raise NotImplementedError("Only strings are supported at the moment")
 
