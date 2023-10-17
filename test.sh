@@ -1,0 +1,2 @@
+CODECRAFTERS_SUBMISSION_DIR=`pwd` CODECRAFTERS_TEST_CASES_JSON="[{\"slug\":\"bencode-string\",\"tester_log_prefix\":\"stage-1\",\"title\":\"Stage #1\"},{\"slug\":\"bencode-int\",\"tester_log_prefix\":\"stage-2\",\"title\":\"Stage #2\"},{\"slug\":\"bencode-list\",\"tester_log_prefix\":\"stage-3\",\"title\":\"Stage #3:\"}]" ../bittorrent-tester/dist/main.out
+# https://github.com/codecrafters-io/bittorrent-tester/blob/main/internal/tester_definition.go
