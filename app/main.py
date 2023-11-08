@@ -1,8 +1,36 @@
 import json
 import sys
+import io
+#from io import StringIO,BufferedReader
 
 # import bencodepy - available if you need it!
 # import requests - available if you need it!
+
+def peek(f : io.BufferedReader) -> chr:
+    return chr(f.peek(1)[0])
+
+def read_int(f : io.BufferedReader) -> int:
+    cnt = 0
+    sign = 1
+    if peek(f) == "-":
+        sign = -1
+        f.read(1)
+    while peek(f).isdigit():
+        cnt = cnt*10 + int(f.read(1))
+    f.read(1) # skip "e"
+    return sign*cnt    
+
+def decode(f : io.BufferedReader) -> str | int | list :    
+    head = peek(f)
+    if head.isdigit():
+        return f.read(read_int(f))
+    if head == "i":
+        f.read(1) # skip "i"
+        return read_int(f)
+    if head == "[":
+        return 10
+    else:
+        return "else"
 
 # Examples:
 #
@@ -11,7 +39,10 @@ import sys
 # - decode_bencode(b"i52e") -> b"52"
 # - decode_bencode(b"i-52e") -> b"-52"
 
-def decode_bencode(bencoded_value):
+def decode_bencode(bencoded_value : bytes):
+    f = io.BufferedReader(io.BytesIO(bencoded_value))
+    #f = io.BytesIO(bencoded_value)
+    return decode(f)
     if chr(bencoded_value[0]).isdigit():
         length = int(bencoded_value.split(b":")[0])
         return bencoded_value.split(b":")[1][:length]
