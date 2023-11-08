@@ -27,10 +27,16 @@ def decode(f : io.BufferedReader) -> str | int | list :
     if head == "i":
         f.read(1) # skip "i"
         return read_int(f)
-    if head == "[":
-        return 10
+    if head == "l":
+        f.read(1) # skip "["
+        ans = []
+        while peek(f) != "e":
+            if peek(f) == ",":
+                f.read(1)
+            ans.append(decode(f))
+        return ans
     else:
-        return "else"
+        return None
 
 # Examples:
 #
