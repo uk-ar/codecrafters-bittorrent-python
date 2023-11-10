@@ -23,7 +23,7 @@ def read_int(f : io.BufferedReader) -> int:
 def decode(f : io.BufferedReader) -> str | int | list :    
     head = peek(f)
     if head.isdigit():
-        return f.read(read_int(f)).decode()
+        return f.read(read_int(f)) #.decode()
     if head == "i":
         f.read(1) # skip "i"
         return read_int(f)
@@ -37,7 +37,8 @@ def decode(f : io.BufferedReader) -> str | int | list :
         f.read(1) # skip "["
         ans = {}
         while peek(f) != "e":
-            key = decode(f)
+            key = decode(f).decode()
+            # print("key:",key)            
             ans[key] = decode(f)
         return ans
     else:
@@ -54,14 +55,6 @@ def decode_bencode(bencoded_value : bytes):
     f = io.BufferedReader(io.BytesIO(bencoded_value))
     #f = io.BytesIO(bencoded_value)
     return decode(f)
-    if chr(bencoded_value[0]).isdigit():
-        length = int(bencoded_value.split(b":")[0])
-        return bencoded_value.split(b":")[1][:length]
-    if chr(bencoded_value[0]) == "i":
-        return int(bencoded_value[1:].split(b"e")[0])
-    else:
-        raise NotImplementedError("Only strings are supported at the moment")
-
 
 def main():
     command = sys.argv[1]
@@ -84,6 +77,12 @@ def main():
 
         # Uncomment this block to pass the first stage
         print(json.dumps(decode_bencode(bencoded_value), default=bytes_to_str))
+    elif command == "info":
+        path = sys.argv[2]
+        with open(path,"rb") as f:
+            info = decode(f)
+            print("Tracker URL:",info["announce"].decode())
+            print("Length:",info["info"]["length"])
     else:
         raise NotImplementedError(f"Unknown command {command}")
 
